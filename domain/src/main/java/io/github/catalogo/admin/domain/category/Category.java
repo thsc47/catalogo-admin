@@ -1,11 +1,11 @@
 package io.github.catalogo.admin.domain.category;
 
+import io.github.catalogo.admin.domain.AggregatedRoot;
+
 import java.time.Instant;
-import java.util.UUID;
 
-public class Category {
+public class Category extends AggregatedRoot<CategoryId> {
 
-    private final String id;
     private final String name;
     private final String description;
     private final boolean active;
@@ -13,14 +13,14 @@ public class Category {
     private final Instant updatedAt;
     private final Instant deletedAt;
 
-    private Category(final String id,
+    private Category(final CategoryId anId,
                     final String name,
                     final String description,
                     final boolean active,
                     final Instant createdAt,
                     final Instant updatedAt,
                     final Instant deletedAt) {
-        this.id = id;
+        super(anId);
         this.name = name;
         this.description = description;
         this.active = active;
@@ -32,12 +32,12 @@ public class Category {
     public static Category newCategory(final String aName,
                                        final String aDescription,
                                        final boolean isActive) {
-        final var id = UUID.randomUUID().toString();
+        final var id = CategoryId.unique();
         final var nowTimestamp = Instant.now();
         return new Category(id, aName, aDescription, isActive, nowTimestamp, nowTimestamp, null);
     }
 
-    public String getId() {
+    public CategoryId getId() {
         return id;
     }
 

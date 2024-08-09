@@ -4,7 +4,6 @@ import io.github.catalogo.admin.domain.category.Category;
 
 public class UseCase {
     public Category execute() {
-        // return new Category();
-        return null;
+        return Category.newCategory("Filmes", "A categoria mais assistida", true);
     }
 }
