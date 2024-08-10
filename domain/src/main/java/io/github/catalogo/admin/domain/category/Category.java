@@ -7,8 +7,8 @@ import java.time.Instant;
 
 public class Category extends AggregatedRoot<CategoryId> {
 
-    private final String name;
-    private final String description;
+    private String name;
+    private String description;
     private boolean active;
     private final Instant createdAt;
     private Instant updatedAt;
@@ -62,6 +62,18 @@ public class Category extends AggregatedRoot<CategoryId> {
         this.active = true;
         this.updatedAt = Instant.now();
         this.deletedAt = null;
+        return this;
+    }
+
+    public Category update(final String aName, final String aDescription, final boolean isActive) {
+        this.name = aName;
+        this.description = aDescription;
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+        this.updatedAt = Instant.now();
         return this;
     }
 
