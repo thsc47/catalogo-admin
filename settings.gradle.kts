@@ -1,4 +1,4 @@
-rootProject.name = "untitled"
+rootProject.name = "catalogo-admin"
 include("domain")
 include("application")
 include("infrastructure")
