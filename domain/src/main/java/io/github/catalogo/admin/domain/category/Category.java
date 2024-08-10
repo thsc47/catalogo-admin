@@ -1,6 +1,7 @@
 package io.github.catalogo.admin.domain.category;
 
 import io.github.catalogo.admin.domain.AggregatedRoot;
+import io.github.catalogo.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
@@ -39,6 +40,11 @@ public class Category extends AggregatedRoot<CategoryId> {
 
     public CategoryId getId() {
         return id;
+    }
+
+    @Override
+    public void validate(ValidationHandler handler) {
+        new CategoryValidator(this, handler).validate();
     }
 
     public String getName() {
