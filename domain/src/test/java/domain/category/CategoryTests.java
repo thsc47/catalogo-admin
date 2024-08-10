@@ -29,17 +29,113 @@ public class CategoryTests {
 
     @Test
     public void givenAnInvalidNullName_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
-        final String expectedName = null;
+        final String nullName = null;
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "Name should not be null";
+        final var expectedErrorMessage = "'name' should not be null";
 
-        final var actualCategory = Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+        final var actualCategory = Category.newCategory(nullName, expectedDescription, expectedIsActive);
         final var actualException = Assertions.assertThrows(DomainException.class, () ->
                 actualCategory.validate(new ThrowsValidationHandler()));
 
         Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
         Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenAnInvalidEmptyName_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
+        final String blankName = " ";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should not be blank";
+
+        final var actualCategory = Category.newCategory(blankName, expectedDescription, expectedIsActive);
+        final var actualException = Assertions.assertThrows(DomainException.class, () ->
+                actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenAnInvalidNameLengthLessThanThree_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
+        final String blankName = "Fi ";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should be between 3 and 255 characters";
+
+        final var actualCategory = Category.newCategory(blankName, expectedDescription, expectedIsActive);
+        final var actualException = Assertions.assertThrows(DomainException.class, () ->
+                actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenAnInvalidNameLengthAbove255_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
+        final String blankName = """
+                No mundo atual, a percepção das dificuldades aponta para a melhoria do retorno esperado a longo prazo.
+                Não obstante, o comprometimento entre as equipes acarreta um processo de reformulação e modernização
+                do orçamento setorial.
+                Caros amigos, o surgimento do comércio virtual não pode mais se dissociar do remanejamento 
+                dos quadros funcionais.
+                Evidentemente, a consolidação das estruturas cumpre um papel essencial na formulação do levantamento 
+                das variáveis envolvidas.
+                """;
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+        final var expectedErrorCount = 1;
+        final var expectedErrorMessage = "'name' should be between 3 and 255 characters";
+
+        final var actualCategory = Category.newCategory(blankName, expectedDescription, expectedIsActive);
+        final var actualException = Assertions.assertThrows(DomainException.class, () ->
+                actualCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+    }
+
+    @Test
+    public void givenAnInvalidEmptyDescription_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
+        final var expectedName = "Filmes";
+        final var blankDescription = " ";
+        final var expectedIsActive = true;
+
+        final var aCategory = Category.newCategory(expectedName, blankDescription, expectedIsActive);
+
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertNotNull(aCategory);
+        Assertions.assertNotNull(aCategory.getId());
+        Assertions.assertEquals(blankDescription, aCategory.getDescription());
+        Assertions.assertEquals(expectedName, aCategory.getName());
+        Assertions.assertEquals(expectedIsActive, aCategory.isActive());
+        Assertions.assertNotNull(aCategory.getCreatedAt());
+        Assertions.assertNotNull(aCategory.getUpdatedAt());
+        Assertions.assertNull(aCategory.getDeletedAt());
+    }
+
+    @Test
+    public void givenAValidFalseIsActive_whenCallANewCategoryAndValidate_thenShouldReceiveAnError() {
+        final var expectedName = "Filmes";
+        final var blankDescription = "A categoria mais assistida";
+        final var expectedIsActive = false;
+
+        final var aCategory = Category.newCategory(expectedName, blankDescription, expectedIsActive);
+
+        Assertions.assertDoesNotThrow(() -> aCategory.validate(new ThrowsValidationHandler()));
+
+        Assertions.assertNotNull(aCategory);
+        Assertions.assertNotNull(aCategory.getId());
+        Assertions.assertEquals(blankDescription, aCategory.getDescription());
+        Assertions.assertEquals(expectedName, aCategory.getName());
+        Assertions.assertEquals(expectedIsActive, aCategory.isActive());
+        Assertions.assertNotNull(aCategory.getCreatedAt());
+        Assertions.assertNotNull(aCategory.getUpdatedAt());
+        Assertions.assertNotNull(aCategory.getDeletedAt());
     }
 }
