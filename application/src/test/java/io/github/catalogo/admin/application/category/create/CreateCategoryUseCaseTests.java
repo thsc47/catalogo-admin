@@ -1,9 +1,6 @@
 package io.github.catalogo.admin.application.category.create;
 
-import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
-import io.github.catalogo.admin.domain.exceptions.DomainException;
-import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -38,7 +35,7 @@ public class CreateCategoryUseCaseTests {
         when(gateway.create(Mockito.any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         assertNotNull(actualOutput);
         assertNotNull(actualOutput.id());
@@ -59,14 +56,15 @@ public class CreateCategoryUseCaseTests {
         final var expectDescription = "A categoria mais assistida";
         final var expectIsActive = true;
         final var expectErrorMessage = "'name' should not be null";
+        final var expectErrorCount = 1;
 
         final var aCommand = CreateCategoryCommand.with(expectedName, expectDescription, expectIsActive);
 
-        final var expectException = assertThrows(DomainException.class, () ->
-                useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        assertNotNull(expectException);
-        assertEquals(expectErrorMessage, expectException.getErrors().get(0).message());
+        assertNotNull(notification);
+        assertEquals(expectErrorCount, notification.getErrors().size());
+        assertEquals(expectErrorMessage, notification.firtsError().message());
 
         verify(gateway, never()).create(any());
     }
@@ -82,7 +80,7 @@ public class CreateCategoryUseCaseTests {
         when(gateway.create(Mockito.any()))
                 .thenAnswer(returnsFirstArg());
 
-        final var actualOutput = useCase.execute(aCommand);
+        final var actualOutput = useCase.execute(aCommand).get();
 
         assertNotNull(actualOutput);
         assertNotNull(actualOutput.id());
@@ -103,17 +101,18 @@ public class CreateCategoryUseCaseTests {
         final var expectDescription = "A categoria mais assistida";
         final var expectIsActive = true;
         final var expectErrorMessage = "gateway error test";
+        final var expectErrorCount = 1;
 
         final var aCommand = CreateCategoryCommand.with(expectedName, expectDescription, expectIsActive);
 
         when(gateway.create(Mockito.any()))
                 .thenThrow(new IllegalStateException("gateway error test"));
 
-        final var actualException = assertThrows(IllegalStateException.class, () ->
-                useCase.execute(aCommand));
+        final var notification = useCase.execute(aCommand).getLeft();
 
-        assertNotNull(actualException);
-        assertEquals(expectErrorMessage, actualException.getMessage());
+        assertNotNull(notification);
+        assertEquals(expectErrorCount, notification.getErrors().size());
+        assertEquals(expectErrorMessage, notification.firtsError().message());
 
         verify(gateway).create(argThat(aCategory ->
                 Objects.equals(expectedName, aCategory.getName())
