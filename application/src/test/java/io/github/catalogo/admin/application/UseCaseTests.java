@@ -9,7 +9,6 @@ import org.mockito.junit.jupiter.MockitoExtension;
 public class UseCaseTests {
 
     @Test
-    @Disabled("Not implemented yed")
     public void testCreateUseCase() {
 
     }
