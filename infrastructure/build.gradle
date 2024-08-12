@@ -25,7 +25,12 @@ dependencies {
     }
     implementation('org.springframework.boot:spring-boot-starter-undertow')
     implementation('org.springframework.boot:spring-boot-starter-data-jpa')
+    /* H2 for local testing (profile test)
+    * implementation('com.h2database:h2')
+    *  */
     implementation('mysql:mysql-connector-java:8.0.33')
+
+    testRuntimeOnly('com.h2database:h2')
     testImplementation('org.springframework.boot:spring-boot-starter-test')
 }
 
