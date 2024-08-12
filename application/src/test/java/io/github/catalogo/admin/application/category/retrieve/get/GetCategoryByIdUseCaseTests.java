@@ -68,7 +68,7 @@ public class GetCategoryByIdUseCaseTests {
                 useCase.execute(expectedId.getValue()));
 
         assertNotNull(expectedException);
-        assertEquals(expectErrorMessage, expectedException.getErrors().getFirst().message());
+        assertEquals(expectErrorMessage, expectedException.getErrors().get(0).message());
 
         verify(gateway).findById(eq(expectedId));
     }

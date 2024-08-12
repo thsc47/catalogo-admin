@@ -180,7 +180,7 @@ public class UpdateCategoryUseCaseTests {
                 () -> useCase.execute(aCommand).get());
 
         assertNotNull(actualException);
-        assertEquals(expectedErrorMessage, actualException.getErrors().getFirst().message());
+        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
         assertEquals(expectedErrorCount, actualException.getErrors().size());
 
         verify(gateway).findById(CategoryId.from(nonExistentId));

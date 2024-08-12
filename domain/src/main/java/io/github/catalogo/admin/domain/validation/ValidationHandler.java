@@ -20,7 +20,7 @@ public interface ValidationHandler {
         if (getErrors().isEmpty()) {
             return null;
         }
-        return getErrors().getFirst();
+        return getErrors().get(0);
     }
 
     interface Validation {
