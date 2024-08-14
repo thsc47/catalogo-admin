@@ -5,6 +5,7 @@ import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.category.CategorySearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
+import io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Component;
 
@@ -42,7 +43,8 @@ public class CategoryMySQLGateway implements CategoryGateway {
 
     @Override
     public Optional<Category> findById(final CategoryId anId) {
-        return Optional.empty();
+        return this.categoryRepository.findById(anId.getValue())
+                .map(CategoryJpaEntity::toAggregate);
     }
 
     @Override
