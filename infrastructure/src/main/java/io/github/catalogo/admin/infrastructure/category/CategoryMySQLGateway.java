@@ -5,10 +5,13 @@ import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.category.CategorySearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
+import io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
+
+import static io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity.from;
 
 @Component
 public class CategoryMySQLGateway implements CategoryGateway {
@@ -20,27 +23,27 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Category create(Category aCategory) {
+    public Category create(final Category aCategory) {
+        return this.categoryRepository.save(from(aCategory)).toAggregate();
+    }
+
+    @Override
+    public Category update(final Category aCategory) {
         return null;
     }
 
     @Override
-    public Category update(Category aCategory) {
+    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
         return null;
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
-    }
-
-    @Override
-    public Optional<Category> findById(CategoryId anId) {
+    public Optional<Category> findById(final CategoryId anId) {
         return Optional.empty();
     }
 
     @Override
-    public void deleteById(CategoryId anId) {
+    public void deleteById(final CategoryId anId) {
 
     }
 }
