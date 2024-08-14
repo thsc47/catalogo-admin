@@ -28,7 +28,7 @@ public @interface MySQLGatewayTest {
     class CleanUpExtension implements BeforeEachCallback {
 
         @Override
-        public void beforeEach(final ExtensionContext context) throws Exception {
+        public void beforeEach(final ExtensionContext context) {
             var repositories = SpringExtension.getApplicationContext(context)
                     .getBeansOfType(CrudRepository.class)
                     .values();
