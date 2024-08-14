@@ -5,6 +5,8 @@ import io.github.catalogo.admin.domain.validation.ValidationHandler;
 
 import java.time.Instant;
 
+import static java.util.Objects.requireNonNull;
+
 public class Category extends AggregatedRoot<CategoryId> {
 
     private String name;
@@ -25,8 +27,8 @@ public class Category extends AggregatedRoot<CategoryId> {
         this.name = name;
         this.description = description;
         this.active = active;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
+        this.createdAt = requireNonNull(createdAt, "'createdAt' cannot be null");
+        this.updatedAt = requireNonNull(updatedAt, "'updatedAt' cannot be null");
         this.deletedAt = deletedAt;
     }
 
