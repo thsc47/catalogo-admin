@@ -5,7 +5,7 @@ import org.junit.jupiter.api.Test;
 
 import static org.springframework.core.env.AbstractEnvironment.ACTIVE_PROFILES_PROPERTY_NAME;
 
-public class ApplicationTests {
+public class MainTests {
 
     @Test
     public void testAppliticationRun() {

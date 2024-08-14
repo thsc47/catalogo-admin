@@ -11,11 +11,11 @@ import org.springframework.stereotype.Component;
 import java.util.Optional;
 
 @Component
-public class CategoryMysqlGateway implements CategoryGateway {
+public class CategoryMySQLGateway implements CategoryGateway {
 
     private final CategoryRepository categoryRepository;
 
-    public CategoryMysqlGateway(final CategoryRepository aCategoryRepository) {
+    public CategoryMySQLGateway(final CategoryRepository aCategoryRepository) {
         this.categoryRepository = aCategoryRepository;
     }
 
