@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.infrastructure.category;
 
+import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.infrastructure.MySQLGatewayTest;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
@@ -17,9 +18,11 @@ public class CategoryMySQLTests {
 
     @Autowired
     private CategoryRepository repository;
+    @Autowired
+    private CategoryMySQLGateway categoryMySQLGateway;
 
     @Test
-    void givenAnValidCategory_whenCallsCreate_shouldReturnANewCategory() {
+    void givenAValidCategory_whenCallsCreate_shouldReturnANewCategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -53,7 +56,7 @@ public class CategoryMySQLTests {
     }
 
     @Test
-    void givenAnValidCategory_whenCallsUpdate_shouldReturnAUpdatedCategory() {
+    void givenAValidCategory_whenCallsUpdate_shouldReturnAUpdatedCategory() {
         final var expectedName = "Filmes";
         final var expectedDescription = "A categoria mais assistida";
         final var expectedIsActive = true;
@@ -88,5 +91,25 @@ public class CategoryMySQLTests {
         assertEquals(anUpdatedCategory.getUpdatedAt(), actualEntity.getUpdatedAt());
         assertEquals(anUpdatedCategory.getDeletedAt(), actualEntity.getDeletedAt());
         assertNull(actualEntity.getDeletedAt());
+    }
+
+    @Test
+    void givenAPrePersistedCategoryWithAValidCategoryId_whenTryToDeleted_shouldDeleteACategory() {
+        final var aCategory = newCategory("Filmes", "", false);
+
+        assertEquals(0, repository.count());
+        repository.saveAndFlush(CategoryJpaEntity.from(aCategory));
+        assertEquals(1, repository.count());
+
+        categoryMySQLGateway.deleteById(aCategory.getId());
+
+        assertEquals(0, repository.count());
+    }
+
+    @Test
+    void givenAPrePersistedCategoryWithAnInvalidCategoryId_whenTryToDeleted_shouldDeleteACategory() {
+        assertEquals(0, repository.count());
+        assertDoesNotThrow(() -> categoryMySQLGateway.deleteById(CategoryId.from("123")));
+        assertEquals(0, repository.count());
     }
 }
