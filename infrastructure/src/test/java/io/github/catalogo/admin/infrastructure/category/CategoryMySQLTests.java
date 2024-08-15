@@ -3,7 +3,7 @@ package io.github.catalogo.admin.infrastructure.category;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.category.CategorySearchQuery;
-import io.github.catalogo.admin.infrastructure.MySQLGatewayTest;
+import io.github.catalogo.admin.MySQLGatewayTest;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

@@ -1,7 +1,7 @@
 package io.github.catalogo.admin.infrastructure.category.persistence;
 
 import io.github.catalogo.admin.domain.category.Category;
-import io.github.catalogo.admin.infrastructure.MySQLGatewayTest;
+import io.github.catalogo.admin.MySQLGatewayTest;
 import org.hibernate.PropertyValueException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
