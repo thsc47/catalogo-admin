@@ -39,7 +39,7 @@ public class GetCategoryByIdUseCaseTestsIT {
         repository.saveAndFlush(CategoryJpaEntity.from(aCategory));
         assertEquals(1, repository.count());
 
-        final var actualOutput = useCase.execute(expectedId.getValue());
+        useCase.execute(expectedId.getValue());
 
         final var actualCategory = repository.findById(expectedId.getValue()).get();
 
