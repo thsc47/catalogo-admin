@@ -38,6 +38,7 @@ dependencies {
     /* H2 for local testing (profile test)
     * implementation('com.h2database:h2')
     *  */
+    implementation('io.vavr:vavr:0.10.4')
     implementation('mysql:mysql-connector-java:8.0.33')
 
     testRuntimeOnly('com.h2database:h2')
