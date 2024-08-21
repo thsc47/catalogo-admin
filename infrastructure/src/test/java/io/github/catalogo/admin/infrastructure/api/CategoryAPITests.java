@@ -32,10 +32,11 @@ public class CategoryAPITests {
     @Autowired
     private MockMvc mvc;
 
+    @Autowired
+    private ObjectMapper mapper;
+
     @MockBean
     private CreateCategoryUseCase createCategoryUseCase;
-
-    private ObjectMapper mapper;
 
     @Test
     void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {

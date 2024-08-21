@@ -1,11 +1,14 @@
 package io.github.catalogo.admin.infrastructure.api;
 
+import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+
+import javax.validation.Valid;
 
 import static org.springframework.http.MediaType.APPLICATION_JSON_VALUE;
 
@@ -21,7 +24,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "422", description = "A validation error was throw"),
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
-    ResponseEntity<?> createCategory();
+    ResponseEntity<?> createCategory(@RequestBody @Valid CreateCategoryApiInput input);
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "List all categories pagineted")
