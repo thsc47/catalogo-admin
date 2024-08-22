@@ -4,15 +4,15 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.catalogo.admin.ControllerTest;
 import io.github.catalogo.admin.application.category.create.CreateCategoryOutput;
 import io.github.catalogo.admin.application.category.create.CreateCategoryUseCase;
+import io.github.catalogo.admin.application.category.retrieve.get.CategoryOutput;
+import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByIddUseCase;
+import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
 import io.github.catalogo.admin.domain.validation.Error;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
-import io.vavr.control.Either;
-import org.hamcrest.Matchers;
 import org.junit.jupiter.api.Test;
-import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
@@ -27,8 +27,9 @@ import static java.lang.String.format;
 import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @ControllerTest(controllers = CategoryAPI.class)
@@ -44,6 +45,12 @@ public class CategoryAPITests {
 
     @MockBean
     private CreateCategoryUseCase createCategoryUseCase;
+
+    @MockBean
+    private GetCategoryByIddUseCase getCategoryByIddUseCase;
+
+    @Autowired
+    private MockMvc mockMvc;
 
     @Test
     void givenAnInvalidCommand_whenCallsCreateCategory_shouldReturnCategoryId() throws Exception {
@@ -121,5 +128,47 @@ public class CategoryAPITests {
                 Objects.equals(expectedName, cmd.name())
                         && Objects.equals(expectedDescription, cmd.description())
                         && Objects.equals(expectIsActive, cmd.isActive())));
+    }
+
+    @Test
+    public void givenAValidId_whenCallsGetCategory_shouldReturnCategory() throws Exception {
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var aCategory =
+                Category.newCategory(expectedName, expectedDescription, expectedIsActive);
+
+        final var expectedId = aCategory.getId().getValue();
+
+        when(getCategoryByIddUseCase.execute(any()))
+                .thenReturn(CategoryOutput.from(aCategory));
+
+        mvc.perform(get("/categories/{id}", expectedId))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id", equalTo(expectedId)))
+                .andExpect(jsonPath("$.name", equalTo(expectedName)))
+                .andExpect(jsonPath("$.description", equalTo(expectedDescription)))
+                .andExpect(jsonPath("$.is_active", equalTo(expectedIsActive)))
+                .andExpect(jsonPath("$.created_at", equalTo(aCategory.getCreatedAt().toString())))
+                .andExpect(jsonPath("$.updated_at", equalTo(aCategory.getUpdatedAt().toString())))
+                .andExpect(jsonPath("$.deleted_at", equalTo(aCategory.getDeletedAt().toString())))
+                .andDo(print());
+
+        verify(getCategoryByIddUseCase).execute(eq(expectedId));
+    }
+
+    @Test
+    public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() throws Exception {
+        final var expectedErrorMessage = "Category with ID 123 was not found";
+        final var expectedId = CategoryId.from("123").getValue();
+
+        final var request = get("/categories/{id}", expectedId);
+
+        final var response = this.mvc.perform(request)
+                .andDo(print());
+
+        response.andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 }
