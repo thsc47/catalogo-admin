@@ -144,7 +144,8 @@ public class CategoryAPITests {
         when(getCategoryByIddUseCase.execute(any()))
                 .thenReturn(CategoryOutput.from(aCategory));
 
-        mvc.perform(get("/categories/{id}", expectedId))
+        mvc.perform(get("/categories/{id}", expectedId)
+                        .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id", equalTo(expectedId)))
                 .andExpect(jsonPath("$.name", equalTo(expectedName)))
@@ -152,7 +153,6 @@ public class CategoryAPITests {
                 .andExpect(jsonPath("$.is_active", equalTo(expectedIsActive)))
                 .andExpect(jsonPath("$.created_at", equalTo(aCategory.getCreatedAt().toString())))
                 .andExpect(jsonPath("$.updated_at", equalTo(aCategory.getUpdatedAt().toString())))
-                .andExpect(jsonPath("$.deleted_at", equalTo(aCategory.getDeletedAt().toString())))
                 .andDo(print());
 
         verify(getCategoryByIddUseCase).execute(eq(expectedId));
@@ -163,12 +163,15 @@ public class CategoryAPITests {
         final var expectedErrorMessage = "Category with ID 123 was not found";
         final var expectedId = CategoryId.from("123").getValue();
 
-        final var request = get("/categories/{id}", expectedId);
+        when(getCategoryByIddUseCase.execute(any()))
+                .thenThrow(DomainException.with(
+                        new Error("Category with ID %s was not found".formatted(expectedId))
+                ));
 
-        final var response = this.mvc.perform(request)
+        mvc.perform(get("/categories/{id}", expectedId)
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNotFound())
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
                 .andDo(print());
-
-        response.andExpect(status().isNotFound())
-                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)));
     }
 }
