@@ -4,6 +4,7 @@ import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -60,15 +61,15 @@ public class GetCategoryByIdUseCaseTests {
     @Test
     void givenAnInvalidId_whenCallsGetByID_shouldReturnNotFound() {
         final var expectedId = CategoryId.from("123");
-        final var expectErrorMessage = format("Category with id %s was not found", expectedId.getValue());
+        final var expectErrorMessage = format("Category with id %s not found", expectedId.getValue());
 
         when(gateway.findById(eq(expectedId))).thenReturn(empty());
 
-        final var expectedException = assertThrows(DomainException.class, () ->
+        final var expectedException = assertThrows(NotFoundException.class, () ->
                 useCase.execute(expectedId.getValue()));
 
         assertNotNull(expectedException);
-        assertEquals(expectErrorMessage, expectedException.getErrors().get(0).message());
+        assertEquals(expectErrorMessage, expectedException.getMessage());
 
         verify(gateway).findById(eq(expectedId));
     }

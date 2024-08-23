@@ -4,6 +4,7 @@ import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import io.github.catalogo.admin.domain.validation.Error;
 
 import java.util.Objects;
@@ -21,12 +22,13 @@ public class DefaultGetCategoryByIddUseCase extends GetCategoryByIddUseCase {
 
     @Override
     public CategoryOutput execute(final String anId) {
-        return this.gateway.findById(CategoryId.from(anId))
+        final var anCategoryId = CategoryId.from(anId);
+        return this.gateway.findById(anCategoryId)
                 .map(CategoryOutput::from)
-                .orElseThrow(NotFound(anId));
+                .orElseThrow(NotFound(anCategoryId));
     }
 
-    private static Supplier<DomainException> NotFound(final String anId) {
-        return () -> DomainException.with(new Error(format("Category with id %s was not found", anId)));
+    private static Supplier<NotFoundException> NotFound(final CategoryId anId) {
+        return () -> NotFoundException.with(Category.class, anId);
     }
 }

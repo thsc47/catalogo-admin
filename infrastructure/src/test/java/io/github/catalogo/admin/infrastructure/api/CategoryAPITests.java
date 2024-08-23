@@ -9,12 +9,14 @@ import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByI
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import io.github.catalogo.admin.domain.validation.Error;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -160,13 +162,12 @@ public class CategoryAPITests {
 
     @Test
     public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() throws Exception {
-        final var expectedErrorMessage = "Category with ID 123 was not found";
-        final var expectedId = CategoryId.from("123").getValue();
+        final var expectedErrorMessage = "Category with id 123 not found";
+        final var expectedId = CategoryId.from("123");
 
         when(getCategoryByIddUseCase.execute(any()))
-                .thenThrow(DomainException.with(
-                        new Error("Category with ID %s was not found".formatted(expectedId))
-                ));
+                .thenThrow(NotFoundException.with(Category.class, expectedId));;
+
 
         mvc.perform(get("/categories/{id}", expectedId)
                         .contentType(MediaType.APPLICATION_JSON))
