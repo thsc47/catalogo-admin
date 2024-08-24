@@ -61,7 +61,7 @@ public class GetCategoryByIdUseCaseTests {
     @Test
     void givenAnInvalidId_whenCallsGetByID_shouldReturnNotFound() {
         final var expectedId = CategoryId.from("123");
-        final var expectErrorMessage = format("Category with id %s not found", expectedId.getValue());
+        final var expectErrorMessage = format("Category with id %s was not found", expectedId.getValue());
 
         when(gateway.findById(eq(expectedId))).thenReturn(empty());
 
