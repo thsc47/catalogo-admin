@@ -146,7 +146,7 @@ public class UpdateCategoryUseCaseTestsIT {
         final var expectDescription = "A categoria mais assistida";
         final var expectIsActive = true;
         final var nonExistentId = "123";
-        final var expectedErrorMessage = format("Category with CategoryId %s was not fount", nonExistentId);
+        final var expectedErrorMessage = format("Category with id %s was not found", nonExistentId);
         final var expectedErrorCount = 1;
 
         final var aCommand = UpdateCategoryCommand.with(nonExistentId,
@@ -156,8 +156,7 @@ public class UpdateCategoryUseCaseTestsIT {
                 () -> useCase.execute(aCommand).get());
 
         assertNotNull(actualException);
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
+        assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 
     private void save(Category... aCategoryList) {

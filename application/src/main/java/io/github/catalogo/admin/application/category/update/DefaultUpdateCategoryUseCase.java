@@ -4,6 +4,7 @@ import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import io.github.catalogo.admin.domain.validation.Error;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 import io.vavr.control.Either;
@@ -46,8 +47,7 @@ public class DefaultUpdateCategoryUseCase extends UpdateCategoryUseCase {
                 .bimap(Notification::create, UpdateCategoryOutput::from);
     }
 
-    private Supplier<DomainException> notFound(final CategoryId anId) {
-        return () -> DomainException.with(
-                new Error(format("Category with CategoryId %s was not fount", anId.getValue())));
+    private Supplier<NotFoundException> notFound(final CategoryId anId) {
+        return () -> NotFoundException.with(Category.class, anId);
     }
 }

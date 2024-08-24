@@ -4,6 +4,7 @@ import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -167,7 +168,7 @@ public class UpdateCategoryUseCaseTests {
         final var expectDescription = "A categoria mais assistida";
         final var expectIsActive = true;
         final var nonExistentId = "123";
-        final var expectedErrorMessage = format("Category with CategoryId %s was not fount", nonExistentId);
+        final var expectedErrorMessage = format("Category with id %s was not found", nonExistentId);
         final var expectedErrorCount = 1;
 
         final var aCommand = UpdateCategoryCommand.with(nonExistentId,
@@ -176,12 +177,11 @@ public class UpdateCategoryUseCaseTests {
         when(gateway.findById(CategoryId.from(nonExistentId)))
                 .thenReturn(Optional.empty());
 
-        final var actualException = assertThrows(DomainException.class,
+        final var actualException = assertThrows(NotFoundException.class,
                 () -> useCase.execute(aCommand).get());
 
         assertNotNull(actualException);
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
+        assertEquals(expectedErrorMessage, actualException.getMessage());
 
         verify(gateway).findById(CategoryId.from(nonExistentId));
         verify(gateway, never()).update(any());

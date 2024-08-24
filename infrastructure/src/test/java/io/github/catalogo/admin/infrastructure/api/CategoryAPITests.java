@@ -19,7 +19,6 @@ import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApi
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.data.crossstore.ChangeSetPersister;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -169,7 +168,7 @@ public class CategoryAPITests {
 
     @Test
     public void givenAInvalidId_whenCallsGetCategory_shouldReturnNotFound() throws Exception {
-        final var expectedErrorMessage = "Category with id 123 not found";
+        final var expectedErrorMessage = "Category with id 123 was not found";
         final var expectedId = CategoryId.from("123");
 
         when(getCategoryByIddUseCase.execute(any()))
@@ -205,6 +204,70 @@ public class CategoryAPITests {
                 .andExpect(jsonPath("$.id", equalTo(expectedId)))
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                        && Objects.equals(expectedDescription, cmd.description())
+                        && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
+    }
+
+    @Test
+    public void givenAInvalidName_whenCallsUpdateCategory_thenShouldReturnDomainException() throws Exception {
+        final var expectedId = "123";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorCount = 1;
+        final var expectedMessage = "'name' should not be null";
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenReturn(Left(Notification.create(new Error(expectedMessage))));
+
+        final var aCommand =
+                new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+
+        mvc.perform(put("/categories/{id}", expectedId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(aCommand)))
+                .andExpect(status().isUnprocessableEntity())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.errors", hasSize(expectedErrorCount)))
+                .andExpect(jsonPath("$.errors[0].message", equalTo(expectedMessage)))
+                .andDo(print());
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                        && Objects.equals(expectedDescription, cmd.description())
+                        && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
+    }
+
+    @Test
+    public void givenACommandWithInvalidID_whenCallsUpdateCategory_shouldReturnNotFoundException() throws Exception {
+        final var expectedId = "not-found";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        final var expectedErrorMessage = "Category with id not-found was not found";
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenThrow(NotFoundException.with(Category.class, CategoryId.from(expectedId)));
+
+        final var aCommand =
+                new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+
+        mvc.perform(put("/categories/{id}", expectedId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(aCommand)))
+                .andExpect(status().isNotFound())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
+                .andDo(print());;
 
         verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
                 Objects.equals(expectedName, cmd.name())
