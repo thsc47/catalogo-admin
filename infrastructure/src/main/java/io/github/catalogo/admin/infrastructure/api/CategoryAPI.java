@@ -2,6 +2,7 @@ package io.github.catalogo.admin.infrastructure.api;
 
 import io.github.catalogo.admin.infrastructure.category.models.CategoryOutputApi;
 import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
+import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApiInput;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -53,4 +54,16 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
     CategoryOutputApi getById(@PathVariable(name = "id") String id);
+
+    @PutMapping(value = "{id}",
+            consumes = APPLICATION_JSON_VALUE,
+            produces = APPLICATION_JSON_VALUE)
+    @Operation(summary = "Get a Category by identifier")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "Category updated successfully"),
+            @ApiResponse(responseCode = "404", description = "A Category was not found"),
+            @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
+    })
+    ResponseEntity<?> updateById(@PathVariable(name = "id") String id,
+                                 @RequestBody @Valid UpdateCategoryApiInput input);
 }
