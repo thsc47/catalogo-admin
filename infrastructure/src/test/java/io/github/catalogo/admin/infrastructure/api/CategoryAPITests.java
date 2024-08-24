@@ -6,6 +6,8 @@ import io.github.catalogo.admin.application.category.create.CreateCategoryOutput
 import io.github.catalogo.admin.application.category.create.CreateCategoryUseCase;
 import io.github.catalogo.admin.application.category.retrieve.get.CategoryOutput;
 import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByIddUseCase;
+import io.github.catalogo.admin.application.category.update.UpdateCategoryOutput;
+import io.github.catalogo.admin.application.category.update.UpdateCategoryUseCase;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.DomainException;
@@ -13,6 +15,7 @@ import io.github.catalogo.admin.domain.exceptions.NotFoundException;
 import io.github.catalogo.admin.domain.validation.Error;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
+import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApiInput;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.mock.mockito.MockBean;
@@ -31,6 +34,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -50,6 +54,9 @@ public class CategoryAPITests {
 
     @MockBean
     private GetCategoryByIddUseCase getCategoryByIddUseCase;
+
+    @MockBean
+    private UpdateCategoryUseCase updateCategoryUseCase;
 
     @Autowired
     private MockMvc mockMvc;
@@ -174,5 +181,34 @@ public class CategoryAPITests {
                 .andExpect(status().isNotFound())
                 .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
                 .andDo(print());
+    }
+
+    @Test
+    public void givenAValidCommand_whenCallsUpdateCategory_shouldReturnCategoryId() throws Exception {
+        final var expectedId = "123";
+        final var expectedName = "Filmes";
+        final var expectedDescription = "A categoria mais assistida";
+        final var expectedIsActive = true;
+
+        when(updateCategoryUseCase.execute(any()))
+                .thenReturn(Right(UpdateCategoryOutput.from(expectedId)));
+
+        final var aCommand =
+                new UpdateCategoryApiInput(expectedName, expectedDescription, expectedIsActive);
+
+
+        mvc.perform(put("/categories/{id}", expectedId)
+                        .accept(MediaType.APPLICATION_JSON)
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(mapper.writeValueAsString(aCommand)))
+                .andExpect(status().isNoContent())
+                .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
+                .andDo(print());
+
+        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+                Objects.equals(expectedName, cmd.name())
+                        && Objects.equals(expectedDescription, cmd.description())
+                        && Objects.equals(expectedIsActive, cmd.isActive())
+        ));
     }
 }

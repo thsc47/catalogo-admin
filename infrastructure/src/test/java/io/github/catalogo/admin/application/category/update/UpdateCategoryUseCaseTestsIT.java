@@ -46,7 +46,7 @@ public class UpdateCategoryUseCaseTestsIT {
                 expectedName, expectDescription, expectIsActive);
 
         final var actualOutput = useCase.execute(aCommand).get();
-        final var actualCategory = repository.findById(actualOutput.id().getValue()).get();
+        final var actualCategory = repository.findById(actualOutput.id()).get();
 
         assertNotNull(actualOutput);
         assertNotNull(actualOutput.id());
@@ -106,7 +106,7 @@ public class UpdateCategoryUseCaseTestsIT {
 
         final var actualOutput = useCase.execute(aCommand).get();
 
-        final var actualCategory = repository.findById(actualOutput.id().getValue()).get();
+        final var actualCategory = repository.findById(actualOutput.id()).get();
 
         assertNotNull(actualCategory);
         assertNotNull(actualCategory.getId());
