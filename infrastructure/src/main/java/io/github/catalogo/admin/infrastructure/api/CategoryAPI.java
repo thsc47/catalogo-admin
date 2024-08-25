@@ -1,9 +1,10 @@
 package io.github.catalogo.admin.infrastructure.api;
 
 import io.github.catalogo.admin.domain.pagination.Pagination;
-import io.github.catalogo.admin.infrastructure.category.models.CategoryOutputApi;
-import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
-import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApiInput;
+import io.github.catalogo.admin.infrastructure.category.models.CategoryListResponse;
+import io.github.catalogo.admin.infrastructure.category.models.CategoryResponse;
+import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryRequest;
+import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryRequest;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
@@ -28,7 +29,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "422", description = "A validation error was throw"),
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
-    ResponseEntity<?> createCategory(@RequestBody @Valid CreateCategoryApiInput input);
+    ResponseEntity<?> createCategory(@RequestBody @Valid CreateCategoryRequest input);
 
     @GetMapping(produces = APPLICATION_JSON_VALUE)
     @Operation(summary = "List all categories pagineted")
@@ -37,7 +38,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "422", description = "An invalid parameter was received"),
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
-    Pagination<?> listCategories(
+    Pagination<CategoryListResponse> listCategories(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
@@ -55,7 +56,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "404", description = "A Category was not found"),
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
-    CategoryOutputApi getById(@PathVariable(name = "id") String id);
+    CategoryResponse getById(@PathVariable(name = "id") String id);
 
     @PutMapping(value = "{id}",
             consumes = APPLICATION_JSON_VALUE,
@@ -67,7 +68,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
     ResponseEntity<?> updateById(@PathVariable(name = "id") String id,
-                                 @RequestBody @Valid UpdateCategoryApiInput input);
+                                 @RequestBody @Valid UpdateCategoryRequest input);
 
     @DeleteMapping(value = "{id}")
     @ResponseStatus(NO_CONTENT)

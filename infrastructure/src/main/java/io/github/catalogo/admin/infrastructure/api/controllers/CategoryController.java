@@ -10,9 +10,10 @@ import io.github.catalogo.admin.application.category.update.UpdateCategoryUseCas
 import io.github.catalogo.admin.domain.category.CategorySearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
 import io.github.catalogo.admin.infrastructure.api.CategoryAPI;
-import io.github.catalogo.admin.infrastructure.category.models.CategoryOutputApi;
-import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
-import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApiInput;
+import io.github.catalogo.admin.infrastructure.category.models.CategoryListResponse;
+import io.github.catalogo.admin.infrastructure.category.models.CategoryResponse;
+import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryRequest;
+import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryRequest;
 import io.github.catalogo.admin.infrastructure.category.presenters.CategoryApiPresenter;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
@@ -43,7 +44,7 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> createCategory(final CreateCategoryApiInput input) {
+    public ResponseEntity<?> createCategory(final CreateCategoryRequest input) {
         final var aCommand =
                 CreateCategoryCommand.with(
                         input.name(),
@@ -59,13 +60,14 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public Pagination<?> listCategories(String search, int page, int perPage, String sort, String direction) {
+    public Pagination<CategoryListResponse> listCategories(String search, int page, int perPage, String sort, String direction) {
         final var aQuery = new CategorySearchQuery(page, perPage, search, sort, direction);
-        return this.listCategoryUseCase.execute(aQuery);
+        return this.listCategoryUseCase.execute(aQuery)
+                .map(CategoryApiPresenter::present);
     }
 
     @Override
-    public CategoryOutputApi getById(final String id) {
+    public CategoryResponse getById(final String id) {
 
         return CategoryApiPresenter
                 .present
@@ -74,7 +76,7 @@ public class CategoryController implements CategoryAPI {
     }
 
     @Override
-    public ResponseEntity<?> updateById(String id, UpdateCategoryApiInput input) {
+    public ResponseEntity<?> updateById(String id, UpdateCategoryRequest input) {
         final var aCommand =
                 UpdateCategoryCommand.with(
                         id,
