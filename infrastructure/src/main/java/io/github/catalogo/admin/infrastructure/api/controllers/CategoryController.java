@@ -2,6 +2,7 @@ package io.github.catalogo.admin.infrastructure.api.controllers;
 
 import io.github.catalogo.admin.application.category.create.CreateCategoryCommand;
 import io.github.catalogo.admin.application.category.create.CreateCategoryUseCase;
+import io.github.catalogo.admin.application.category.delete.DeleteCategoryUseCase;
 import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByIddUseCase;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryCommand;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryUseCase;
@@ -23,13 +24,16 @@ public class CategoryController implements CategoryAPI {
     private final CreateCategoryUseCase createCategoryUseCase;
     private final GetCategoryByIddUseCase getCategoryByIddUseCase;
     private final UpdateCategoryUseCase updateCategoryUseCase;
+    private final DeleteCategoryUseCase deleteCategoryUseCase;
 
     public CategoryController(final CreateCategoryUseCase aCreateCategoryUseCase,
                               final GetCategoryByIddUseCase aGetCategoryByIddUseCase,
-                              final UpdateCategoryUseCase aUpdateCategoryUseCase) {
+                              final UpdateCategoryUseCase aUpdateCategoryUseCase,
+                              final DeleteCategoryUseCase aDeleteCategoryUseCase) {
         this.createCategoryUseCase = requireNonNull(aCreateCategoryUseCase);
         this.getCategoryByIddUseCase = requireNonNull(aGetCategoryByIddUseCase);
         this.updateCategoryUseCase = requireNonNull(aUpdateCategoryUseCase);
+        this.deleteCategoryUseCase = requireNonNull(aDeleteCategoryUseCase);
     }
 
     @Override
@@ -76,5 +80,10 @@ public class CategoryController implements CategoryAPI {
                         ResponseEntity.unprocessableEntity()::body,
                         output -> ResponseEntity.ok().body(output)
                 );
+    }
+
+    @Override
+    public void deleteById(String id) {
+        this.deleteCategoryUseCase.execute(id);
     }
 }
