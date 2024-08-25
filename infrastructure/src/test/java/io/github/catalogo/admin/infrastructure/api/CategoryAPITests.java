@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.github.catalogo.admin.ControllerTest;
 import io.github.catalogo.admin.application.category.create.CreateCategoryOutput;
 import io.github.catalogo.admin.application.category.create.CreateCategoryUseCase;
+import io.github.catalogo.admin.application.category.delete.DeleteCategoryUseCase;
 import io.github.catalogo.admin.application.category.retrieve.get.CategoryOutput;
 import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByIddUseCase;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryOutput;
@@ -32,8 +33,7 @@ import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
@@ -56,6 +56,9 @@ public class CategoryAPITests {
 
     @MockBean
     private UpdateCategoryUseCase updateCategoryUseCase;
+
+    @MockBean
+    private DeleteCategoryUseCase deleteCategoryUseCase;
 
     @Autowired
     private MockMvc mockMvc;
@@ -205,7 +208,7 @@ public class CategoryAPITests {
                 .andExpect(header().string("Content-Type", MediaType.APPLICATION_JSON_VALUE))
                 .andDo(print());
 
-        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+        verify(updateCategoryUseCase).execute(argThat(cmd ->
                 Objects.equals(expectedName, cmd.name())
                         && Objects.equals(expectedDescription, cmd.description())
                         && Objects.equals(expectedIsActive, cmd.isActive())
@@ -238,7 +241,7 @@ public class CategoryAPITests {
                 .andExpect(jsonPath("$.errors[0].message", equalTo(expectedMessage)))
                 .andDo(print());
 
-        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+        verify(updateCategoryUseCase).execute(argThat(cmd ->
                 Objects.equals(expectedName, cmd.name())
                         && Objects.equals(expectedDescription, cmd.description())
                         && Objects.equals(expectedIsActive, cmd.isActive())
@@ -269,10 +272,25 @@ public class CategoryAPITests {
                 .andExpect(jsonPath("$.message", equalTo(expectedErrorMessage)))
                 .andDo(print());;
 
-        verify(updateCategoryUseCase, times(1)).execute(argThat(cmd ->
+        verify(updateCategoryUseCase).execute(argThat(cmd ->
                 Objects.equals(expectedName, cmd.name())
                         && Objects.equals(expectedDescription, cmd.description())
                         && Objects.equals(expectedIsActive, cmd.isActive())
         ));
+    }
+
+    @Test
+    public void givenAValidId_whenCallsDeleteCategory_shouldBeOK() throws Exception {
+        final var expectedId = "123";
+
+        doNothing().when(deleteCategoryUseCase).execute(any());
+
+        mvc.perform(delete("/categories/{id}", expectedId)
+                .accept(MediaType.APPLICATION_JSON)
+                .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isNoContent())
+                .andDo(print());
+
+        verify(deleteCategoryUseCase).execute(eq(expectedId));
     }
 }
