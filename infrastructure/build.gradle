@@ -44,6 +44,10 @@ dependencies {
     *  */
     implementation('io.vavr:vavr:0.10.4')
     implementation('mysql:mysql-connector-java:8.0.33')
+    implementation(implementation 'com.fasterxml.jackson.core:jackson-core')
+    implementation('com.fasterxml.jackson.module:jackson-module-afterburner')
+
+
 
     testRuntimeOnly('com.h2database:h2')
     testImplementation('org.flywaydb:flyway-core:10.17.1')
