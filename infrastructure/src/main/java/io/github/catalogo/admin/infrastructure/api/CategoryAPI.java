@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.infrastructure.api;
 
+import io.github.catalogo.admin.domain.pagination.Pagination;
 import io.github.catalogo.admin.infrastructure.category.models.CategoryOutputApi;
 import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryApiInput;
 import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryApiInput;
@@ -36,7 +37,7 @@ public interface CategoryAPI {
             @ApiResponse(responseCode = "422", description = "An invalid parameter was received"),
             @ApiResponse(responseCode = "500", description = "An unexpected server error was throw")
     })
-    ResponseEntity<?> listCategories(
+    Pagination<?> listCategories(
             @RequestParam(name = "search", required = false, defaultValue = "") final String search,
             @RequestParam(name = "page", required = false, defaultValue = "0") final int page,
             @RequestParam(name = "perPage", required = false, defaultValue = "10") final int perPage,
