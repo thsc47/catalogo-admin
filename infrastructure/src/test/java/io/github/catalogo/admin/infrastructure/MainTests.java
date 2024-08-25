@@ -9,7 +9,7 @@ public class MainTests {
 
     @Test
     public void testAppliticationRun() {
-        System.setProperty(ACTIVE_PROFILES_PROPERTY_NAME, "test");
+        System.setProperty(ACTIVE_PROFILES_PROPERTY_NAME, "test-integration");
         Assertions.assertNotNull(new Main());
         Main.main(new String[]{});
     }

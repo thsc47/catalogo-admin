@@ -12,7 +12,7 @@ import static org.springframework.context.annotation.FilterType.REGEX;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @DataJpaTest
-@ActiveProfiles("test")
+@ActiveProfiles("test-integration")
 @ComponentScan(includeFilters = {
         @ComponentScan.Filter(type = REGEX, pattern = ".[MySQLGateway]")
 })
