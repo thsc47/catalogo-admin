@@ -7,7 +7,6 @@ import io.github.catalogo.admin.infrastructure.category.models.CreateCategoryReq
 import io.github.catalogo.admin.infrastructure.category.models.UpdateCategoryRequest;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
 import io.github.catalogo.admin.infrastructure.configuration.json.Json;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,12 +26,10 @@ import static org.springframework.http.MediaType.APPLICATION_JSON;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static org.wildfly.common.Assert.assertNotNull;
-import static org.wildfly.common.Assert.assertTrue;
+import static org.wildfly.common.Assert.*;
 
 @E2ETest
-@Disabled
-@Testcontainers
+@Testcontainers(disabledWithoutDocker = true)
 public class CategoryE2ETest {
 
     @Autowired
@@ -41,7 +38,6 @@ public class CategoryE2ETest {
     @Autowired
     private CategoryRepository categoryRepository;
 
-    @Container
     private static final MySQLContainer MYSQL_CONTAINER
             = new MySQLContainer("mysql:latest")
             .withDatabaseName("adm_videos")
@@ -304,6 +300,23 @@ public class CategoryE2ETest {
 
         return mvc.perform(aRequest);
     }
+
+    @Test
+    public void asACatalogAdminIShouldBeAbleToDeleteACategoryByItsIdentifier() throws Exception {
+        assertTrue(MYSQL_CONTAINER.isRunning());
+        assertEquals(0, categoryRepository.count());
+
+        final var actualId = givenACategory("Filmes", null, true);
+
+        this.mvc.perform(
+                        delete("/categories/" + actualId.getValue())
+                                .contentType(APPLICATION_JSON)
+                )
+                .andExpect(status().isNoContent());
+
+        assertFalse(this.categoryRepository.existsById(actualId.getValue()));
+    }
+
 
     private CategoryId givenACategory(final String aName, final String aDescription, final boolean isActive) throws Exception {
         final var aRequestBody = new CreateCategoryRequest(aName, aDescription, isActive);
