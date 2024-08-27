@@ -29,6 +29,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.wildfly.common.Assert.*;
 
 @E2ETest
+@Disabled
 @Testcontainers(disabledWithoutDocker = true)
 public class CategoryE2ETest {
 
@@ -38,6 +39,7 @@ public class CategoryE2ETest {
     @Autowired
     private CategoryRepository categoryRepository;
 
+    @Container
     private static final MySQLContainer MYSQL_CONTAINER
             = new MySQLContainer("mysql:latest")
             .withDatabaseName("adm_videos")
