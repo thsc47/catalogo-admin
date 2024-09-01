@@ -1,5 +1,8 @@
 package domain.genre;
 
+import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.genre.Genre;
+import io.github.catalogo.admin.domain.validation.handler.ThrowsValidationHandler;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -32,7 +35,7 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
+        final var actualException = assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
 
@@ -49,7 +52,7 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
+        final var actualException = assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
 
@@ -71,7 +74,7 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        final var actualException = Assertions.assertThrows(DomainException.class, () -> {
+        final var actualException = assertThrows(DomainException.class, () -> {
             actualGenre.validate(new ThrowsValidationHandler());
         });
 

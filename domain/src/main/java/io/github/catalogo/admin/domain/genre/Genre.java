@@ -1,0 +1,93 @@
+package io.github.catalogo.admin.domain.genre;
+
+import io.github.catalogo.admin.domain.AggregatedRoot;
+import io.github.catalogo.admin.domain.category.CategoryId;
+import io.github.catalogo.admin.domain.validation.ValidationHandler;
+
+import java.time.Instant;
+import java.util.ArrayList;
+import java.util.List;
+
+public class Genre extends AggregatedRoot<GenreId> {
+
+    private final String name;
+    private final boolean active;
+    private final List<CategoryId> categories;
+    private final Instant createdAt;
+    private final Instant updatedAt;
+    private final Instant deletedAt;
+
+    public Genre(final GenreId genreId,
+                 final String name,
+                 final boolean active,
+                 final List<CategoryId> categories,
+                 final Instant createdAt,
+                 final Instant updatedAt,
+                 final Instant deletedAt) {
+        super(genreId);
+        this.name = name;
+        this.active = active;
+        this.categories = categories;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+        this.deletedAt = deletedAt;
+    }
+
+    public static Genre newGenre(final String aName, final boolean isActive) {
+        final var anId = GenreID.unique();
+        final var now = Instant.now();
+        final var deletedAt = isActive ? null : now;
+        return new Genre(anId, aName, isActive, new ArrayList<>(), now, now, deletedAt);
+    }
+
+    public static Genre with(
+            final GenreId anId,
+            final String aName,
+            final boolean isActive,
+            final List<CategoryId> categories,
+            final Instant aCreatedAt,
+            final Instant aUpdatedAt,
+            final Instant aDeletedAt
+    ) {
+        return new Genre(anId, aName, isActive, categories, aCreatedAt, aUpdatedAt, aDeletedAt);
+    }
+
+    public static Genre with(final Genre aGenre) {
+        return new Genre(
+                aGenre.id,
+                aGenre.name,
+                aGenre.active,
+                new ArrayList<>(aGenre.categories),
+                aGenre.createdAt,
+                aGenre.updatedAt,
+                aGenre.deletedAt
+        );
+    }
+
+    @Override
+    public void validate(final ValidationHandler handler) {}
+
+    public String getName() {
+        return name;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public List<CategoryId> getCategories() {
+        return categories;
+    }
+
+    public Instant getCreatedAt() {
+        return createdAt;
+    }
+
+    public Instant getUpdatedAt() {
+        return updatedAt;
+    }
+
+    public Instant getDeletedAt() {
+        return deletedAt;
+    }
+}
