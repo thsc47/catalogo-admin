@@ -2,7 +2,9 @@ package io.github.catalogo.admin.domain.genre;
 
 import io.github.catalogo.admin.domain.AggregatedRoot;
 import io.github.catalogo.admin.domain.category.CategoryId;
+import io.github.catalogo.admin.domain.exceptions.NotificationException;
 import io.github.catalogo.admin.domain.validation.ValidationHandler;
+import io.github.catalogo.admin.domain.validation.handler.Notification;
 
 import java.time.Instant;
 import java.util.ArrayList;
@@ -31,10 +33,17 @@ public class Genre extends AggregatedRoot<GenreId> {
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.deletedAt = deletedAt;
+
+        final var notification = Notification.create();
+        validate(notification);
+
+        if (notification.hasError()) {
+            throw new NotificationException("Failed to create a Aggregate Genre", notification);
+        }
     }
 
     public static Genre newGenre(final String aName, final boolean isActive) {
-        final var anId = GenreID.unique();
+        final var anId = GenreId.unique();
         final var now = Instant.now();
         final var deletedAt = isActive ? null : now;
         return new Genre(anId, aName, isActive, new ArrayList<>(), now, now, deletedAt);
@@ -65,7 +74,9 @@ public class Genre extends AggregatedRoot<GenreId> {
     }
 
     @Override
-    public void validate(final ValidationHandler handler) {}
+    public void validate(final ValidationHandler handler) {
+        new GenreValidator(this, handler).validate();
+    }
 
     public String getName() {
         return name;

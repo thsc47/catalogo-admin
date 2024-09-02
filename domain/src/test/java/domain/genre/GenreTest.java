@@ -1,13 +1,14 @@
 package domain.genre;
 
-import io.github.catalogo.admin.domain.exceptions.DomainException;
+import io.github.catalogo.admin.domain.exceptions.NotificationException;
 import io.github.catalogo.admin.domain.genre.Genre;
-import io.github.catalogo.admin.domain.validation.handler.ThrowsValidationHandler;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
 
 public class GenreTest {
+
     @Test
     public void givenValidParams_whenCallNewGenre_shouldInstantiateAGenre() {
         final var expectedName = "Ação";
@@ -33,11 +34,9 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' should not be null";
 
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-
-        final var actualException = assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
-        });
+        final var actualException = Assertions.assertThrows(NotificationException.class, () ->
+            Genre.newGenre(expectedName, expectedIsActive)
+        );
 
         assertEquals(expectedErrorCount, actualException.getErrors().size());
         assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
@@ -48,16 +47,14 @@ public class GenreTest {
         final var expectedName = " ";
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "'name' should not be empty";
+        final var expectedErrorMessage = "'name' should not be blank";
 
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
+        final var actualException = Assertions.assertThrows(NotificationException.class, () ->
+            Genre.newGenre(expectedName, expectedIsActive)
+        );
 
-        final var actualException = assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
-        });
-
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -70,13 +67,11 @@ public class GenreTest {
                 """;
         final var expectedIsActive = true;
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "'name' must be between 1 and 255 characters";
+        final var expectedErrorMessage = "'name' should be between 1 and 255 characters";
 
-        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
-
-        final var actualException = assertThrows(DomainException.class, () -> {
-            actualGenre.validate(new ThrowsValidationHandler());
-        });
+        final var actualException = assertThrows(NotificationException.class, () ->
+            Genre.newGenre(expectedName, expectedIsActive)
+        );
 
         assertEquals(expectedErrorCount, actualException.getErrors().size());
         assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
