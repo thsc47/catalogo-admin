@@ -3,6 +3,7 @@ package io.github.catalogo.admin.domain.genre;
 import io.github.catalogo.admin.domain.AggregatedRoot;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.NotificationException;
+import io.github.catalogo.admin.domain.utils.InstantUtils;
 import io.github.catalogo.admin.domain.validation.ValidationHandler;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 
@@ -12,12 +13,12 @@ import java.util.List;
 
 public class Genre extends AggregatedRoot<GenreId> {
 
-    private final String name;
-    private final boolean active;
-    private final List<CategoryId> categories;
-    private final Instant createdAt;
-    private final Instant updatedAt;
-    private final Instant deletedAt;
+    private String name;
+    private boolean active;
+    private List<CategoryId> categories;
+    private Instant createdAt;
+    private Instant updatedAt;
+    private Instant deletedAt;
 
     public Genre(final GenreId genreId,
                  final String name,
@@ -44,7 +45,7 @@ public class Genre extends AggregatedRoot<GenreId> {
 
     public static Genre newGenre(final String aName, final boolean isActive) {
         final var anId = GenreId.unique();
-        final var now = Instant.now();
+        final var now = InstantUtils.now();
         final var deletedAt = isActive ? null : now;
         return new Genre(anId, aName, isActive, new ArrayList<>(), now, now, deletedAt);
     }
@@ -100,5 +101,21 @@ public class Genre extends AggregatedRoot<GenreId> {
 
     public Instant getDeletedAt() {
         return deletedAt;
+    }
+
+    public Genre deactivate() {
+        if (getDeletedAt() == null) {
+            this.deletedAt = InstantUtils.now();
+        }
+        this.updatedAt = InstantUtils.now();
+        this.active = false;
+        return this;
+    }
+
+    public Genre activate() {
+        this.deletedAt = null;
+        this.updatedAt = InstantUtils.now();
+        this.active = true;
+        return this;
     }
 }
