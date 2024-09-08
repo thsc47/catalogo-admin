@@ -11,6 +11,8 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.unmodifiableList;
+
 public class Genre extends AggregatedRoot<GenreId> {
 
     private String name;
@@ -20,27 +22,23 @@ public class Genre extends AggregatedRoot<GenreId> {
     private Instant updatedAt;
     private Instant deletedAt;
 
-    public Genre(final GenreId genreId,
-                 final String name,
-                 final boolean active,
-                 final List<CategoryId> categories,
-                 final Instant createdAt,
-                 final Instant updatedAt,
-                 final Instant deletedAt) {
-        super(genreId);
-        this.name = name;
-        this.active = active;
+    protected Genre(
+            final GenreId anId,
+            final String aName,
+            final boolean isActive,
+            final List<CategoryId> categories,
+            final Instant aCreatedAt,
+            final Instant aUpdatedAt,
+            final Instant aDeletedAt
+    ) {
+        super(anId);
+        this.name = aName;
         this.categories = categories;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
-        this.deletedAt = deletedAt;
-
-        final var notification = Notification.create();
-        validate(notification);
-
-        if (notification.hasError()) {
-            throw new NotificationException("Failed to create a Aggregate Genre", notification);
-        }
+        this.active = isActive;
+        this.createdAt = aCreatedAt;
+        this.updatedAt = aUpdatedAt;
+        this.deletedAt = aDeletedAt;
+        selfValidate();
     }
 
     public static Genre newGenre(final String aName, final boolean isActive) {
@@ -79,6 +77,35 @@ public class Genre extends AggregatedRoot<GenreId> {
         new GenreValidator(this, handler).validate();
     }
 
+    public Genre update(final String aName, final boolean isActive, final List<CategoryId> categories) {
+        if (isActive) {
+            activate();
+        } else {
+            deactivate();
+        }
+        this.name = aName;
+        this.categories = new ArrayList<>(categories);
+        this.updatedAt = InstantUtils.now();
+        selfValidate();
+        return this;
+    }
+
+    public Genre deactivate() {
+        if (getDeletedAt() == null) {
+            this.deletedAt = InstantUtils.now();
+        }
+        this.active = false;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
+    public Genre activate() {
+        this.deletedAt = null;
+        this.active = true;
+        this.updatedAt = InstantUtils.now();
+        return this;
+    }
+
     public String getName() {
         return name;
     }
@@ -103,19 +130,12 @@ public class Genre extends AggregatedRoot<GenreId> {
         return deletedAt;
     }
 
-    public Genre deactivate() {
-        if (getDeletedAt() == null) {
-            this.deletedAt = InstantUtils.now();
-        }
-        this.updatedAt = InstantUtils.now();
-        this.active = false;
-        return this;
-    }
+    private void selfValidate() {
+        final var notification = Notification.create();
+        validate(notification);
 
-    public Genre activate() {
-        this.deletedAt = null;
-        this.updatedAt = InstantUtils.now();
-        this.active = true;
-        return this;
+        if (notification.hasError()) {
+            throw new NotificationException("Failed to create a Aggregate Genre", notification);
+        }
     }
 }
