@@ -11,6 +11,7 @@ import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
 import static java.util.Collections.unmodifiableList;
 
 public class Genre extends AggregatedRoot<GenreId> {
@@ -33,7 +34,7 @@ public class Genre extends AggregatedRoot<GenreId> {
     ) {
         super(anId);
         this.name = aName;
-        this.categories = categories;
+        this.categories = new ArrayList<>(categories != null ? categories : emptyList());
         this.active = isActive;
         this.createdAt = aCreatedAt;
         this.updatedAt = aUpdatedAt;
