@@ -1,6 +1,6 @@
-package io.github.catalogo.admin.domain.category;
+package io.github.catalogo.admin.domain.pagination;
 
-public record CategorySearchQuery(
+public record SearchQuery(
         int page,
         int perPage,
         String terms,

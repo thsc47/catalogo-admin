@@ -7,7 +7,7 @@ import io.github.catalogo.admin.application.category.retrieve.get.GetCategoryByI
 import io.github.catalogo.admin.application.category.retrieve.list.ListCategoryUseCase;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryCommand;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryUseCase;
-import io.github.catalogo.admin.domain.category.CategorySearchQuery;
+import io.github.catalogo.admin.domain.pagination.SearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
 import io.github.catalogo.admin.infrastructure.api.CategoryAPI;
 import io.github.catalogo.admin.infrastructure.category.models.CategoryListResponse;
@@ -61,7 +61,7 @@ public class CategoryController implements CategoryAPI {
 
     @Override
     public Pagination<CategoryListResponse> listCategories(String search, int page, int perPage, String sort, String direction) {
-        final var aQuery = new CategorySearchQuery(page, perPage, search, sort, direction);
+        final var aQuery = new SearchQuery(page, perPage, search, sort, direction);
         return this.listCategoryUseCase.execute(aQuery)
                 .map(CategoryApiPresenter::present);
     }

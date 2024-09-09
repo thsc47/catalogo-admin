@@ -2,7 +2,7 @@ package io.github.catalogo.admin.application.category.retrieve.list;
 
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
-import io.github.catalogo.admin.domain.category.CategorySearchQuery;
+import io.github.catalogo.admin.domain.pagination.SearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -41,7 +41,7 @@ public class ListCategoryUseCaseTests {
         final var expectedDirection = "ASC";
 
         final var aQuery =
-                new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var expectedPagination =
                 new Pagination<>(expectedPage, expectedPerPage, aCategoryList.size(), aCategoryList);
 
@@ -72,7 +72,7 @@ public class ListCategoryUseCaseTests {
         final var expectedDirection = "ASC";
 
         final var aQuery =
-                new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
         final var expectedPagination =
                 new Pagination<>(expectedPage, expectedPerPage, aCategoryList.size(), aCategoryList);
 
@@ -103,7 +103,7 @@ public class ListCategoryUseCaseTests {
         final var expectedErrorMessage = "Gateway Error";
 
         final var aQuery =
-                new CategorySearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
+                new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         when(gateway.findAll(eq(aQuery)))
                 .thenThrow(new IllegalStateException("Gateway Error"));

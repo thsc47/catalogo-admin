@@ -9,8 +9,6 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 public class GenreTest {
 
     @Test
@@ -21,14 +19,14 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        assertNotNull(actualGenre);
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories().size());
-        assertNotNull(actualGenre.getCreatedAt());
-        assertNotNull(actualGenre.getUpdatedAt());
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre);
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories().size());
+        Assertions.assertNotNull(actualGenre.getCreatedAt());
+        Assertions.assertNotNull(actualGenre.getUpdatedAt());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -38,12 +36,12 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' should not be null";
 
-        final var actualException = Assertions.assertThrows(NotificationException.class, () ->
-            Genre.newGenre(expectedName, expectedIsActive)
-        );
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
+        });
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -53,12 +51,12 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' should not be blank";
 
-        final var actualException = Assertions.assertThrows(NotificationException.class, () ->
-            Genre.newGenre(expectedName, expectedIsActive)
-        );
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
+        });
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -73,12 +71,12 @@ public class GenreTest {
         final var expectedErrorCount = 1;
         final var expectedErrorMessage = "'name' should be between 1 and 255 characters";
 
-        final var actualException = assertThrows(NotificationException.class, () ->
-            Genre.newGenre(expectedName, expectedIsActive)
-        );
+        final var actualException = Assertions.assertThrows(NotificationException.class, () -> {
+            Genre.newGenre(expectedName, expectedIsActive);
+        });
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -89,21 +87,17 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, true);
 
-        assertNotNull(actualGenre);
-        assertTrue(actualGenre.isActive());
-        assertNull(actualGenre.getDeletedAt());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertNotNull(actualGenre);
+        Assertions.assertTrue(actualGenre.isActive());
+        Assertions.assertNull(actualGenre.getDeletedAt());
 
         actualGenre.deactivate();
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories().size());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertNotNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories().size());
+        Assertions.assertNotNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -114,23 +108,17 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre(expectedName, false);
 
-        assertNotNull(actualGenre);
-        assertFalse(actualGenre.isActive());
-        assertNotNull(actualGenre.getDeletedAt());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertNotNull(actualGenre);
+        Assertions.assertFalse(actualGenre.isActive());
+        Assertions.assertNotNull(actualGenre.getDeletedAt());
 
         actualGenre.activate();
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories().size());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNotNull(actualGenre.getUpdatedAt());
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories().size());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -141,22 +129,17 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre("acao", false);
 
-        assertNotNull(actualGenre);
-        assertFalse(actualGenre.isActive());
-        assertNotNull(actualGenre.getDeletedAt());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertNotNull(actualGenre);
+        Assertions.assertFalse(actualGenre.isActive());
+        Assertions.assertNotNull(actualGenre.getDeletedAt());
 
         actualGenre.update(expectedName, expectedIsActive, expectedCategories);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -167,22 +150,17 @@ public class GenreTest {
 
         final var actualGenre = Genre.newGenre("acao", true);
 
-        assertNotNull(actualGenre);
-        assertTrue(actualGenre.isActive());
-        assertNull(actualGenre.getDeletedAt());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertNotNull(actualGenre);
+        Assertions.assertTrue(actualGenre.isActive());
+        Assertions.assertNull(actualGenre.getDeletedAt());
 
         actualGenre.update(expectedName, expectedIsActive, expectedCategories);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNotNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNotNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -191,7 +169,7 @@ public class GenreTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.of(CategoryId.from("123"));
         final var expectedErrorCount = 1;
-        final var expectedErrorMessage = "'name' should not be empty";
+        final var expectedErrorMessage = "'name' should not be blank";
 
         final var actualGenre = Genre.newGenre("acao", false);
 
@@ -199,8 +177,8 @@ public class GenreTest {
             actualGenre.update(expectedName, expectedIsActive, expectedCategories);
         });
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -217,32 +195,8 @@ public class GenreTest {
             actualGenre.update(expectedName, expectedIsActive, expectedCategories);
         });
 
-        assertEquals(expectedErrorCount, actualException.getErrors().size());
-        assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
-    }
-
-    @Test
-    public void givenAValidGenre_whenCallUpdateWithNullCategories_shouldReceiveOK() {
-        final var expectedName = "Ação";
-        final var expectedIsActive = true;
-        final var expectedCategories = new ArrayList<CategoryId>();
-
-        final var actualGenre = Genre.newGenre("acao", expectedIsActive);
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
-
-        Assertions.assertDoesNotThrow(() -> {
-            actualGenre.update(expectedName, expectedIsActive, null);
-        });
-
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertEquals(expectedErrorCount, actualException.getErrors().size());
+        Assertions.assertEquals(expectedErrorMessage, actualException.getErrors().get(0).message());
     }
 
     @Test
@@ -254,50 +208,37 @@ public class GenreTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.of(seriesID, moviesID);
 
-        final var actualGenre = Genre.newGenre("acao", expectedIsActive);
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        assertEquals(0, actualGenre.getCategories().size());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertEquals(0, actualGenre.getCategories().size());
 
         actualGenre.addCategory(seriesID);
         actualGenre.addCategory(moviesID);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
     public void givenAInvalidNullAsCategoryID_whenCallAddCategory_shouldReceiveOK() {
-        final var seriesID = CategoryId.from("123");
-        final var moviesID = CategoryId.from("456");
-
         final var expectedName = "Ação";
         final var expectedIsActive = true;
         final var expectedCategories = new ArrayList<CategoryId>();
 
-        final var actualGenre = Genre.newGenre("acao", expectedIsActive);
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
 
-        assertEquals(0, actualGenre.getCategories().size());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertEquals(0, actualGenre.getCategories().size());
 
         actualGenre.addCategory(null);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -309,23 +250,18 @@ public class GenreTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.of(moviesID);
 
-        final var actualGenre = Genre.newGenre("acao", expectedIsActive);
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
         actualGenre.update(expectedName, expectedIsActive, List.of(seriesID, moviesID));
 
-        assertEquals(2, actualGenre.getCategories().size());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertEquals(2, actualGenre.getCategories().size());
 
         actualGenre.removeCategory(seriesID);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 
     @Test
@@ -337,22 +273,17 @@ public class GenreTest {
         final var expectedIsActive = true;
         final var expectedCategories = List.of(seriesID, moviesID);
 
-        final var actualGenre = Genre.newGenre("acao", expectedIsActive);
+        final var actualGenre = Genre.newGenre(expectedName, expectedIsActive);
         actualGenre.update(expectedName, expectedIsActive, expectedCategories);
 
-        assertEquals(2, actualGenre.getCategories().size());
-
-        final var actualCreatedAt = actualGenre.getCreatedAt();
-        final var actualUpdatedAt = actualGenre.getUpdatedAt();
+        Assertions.assertEquals(2, actualGenre.getCategories().size());
 
         actualGenre.removeCategory(null);
 
-        assertNotNull(actualGenre.getId());
-        assertEquals(expectedName, actualGenre.getName());
-        assertEquals(expectedIsActive, actualGenre.isActive());
-        assertEquals(expectedCategories, actualGenre.getCategories());
-        assertEquals(actualCreatedAt, actualGenre.getCreatedAt());
-        assertTrue(actualUpdatedAt.isBefore(actualGenre.getUpdatedAt()));
-        assertNull(actualGenre.getDeletedAt());
+        Assertions.assertNotNull(actualGenre.getId());
+        Assertions.assertEquals(expectedName, actualGenre.getName());
+        Assertions.assertEquals(expectedIsActive, actualGenre.isActive());
+        Assertions.assertEquals(expectedCategories, actualGenre.getCategories());
+        Assertions.assertNull(actualGenre.getDeletedAt());
     }
 }

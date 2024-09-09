@@ -1,7 +1,7 @@
 package io.github.catalogo.admin.application.category.retrieve.list;
 
 import io.github.catalogo.admin.domain.category.CategoryGateway;
-import io.github.catalogo.admin.domain.category.CategorySearchQuery;
+import io.github.catalogo.admin.domain.pagination.SearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
 
 import java.util.Objects;
@@ -15,7 +15,7 @@ public class DefaultListCategoryUseCase extends ListCategoryUseCase {
     }
 
     @Override
-    public Pagination<CategoryListOutput> execute(final CategorySearchQuery aQuery) {
+    public Pagination<CategoryListOutput> execute(final SearchQuery aQuery) {
        return this.gateway.findAll(aQuery)
                 .map(CategoryListOutput::from);
     }

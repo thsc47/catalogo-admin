@@ -3,7 +3,7 @@ package io.github.catalogo.admin.infrastructure.category;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
-import io.github.catalogo.admin.domain.category.CategorySearchQuery;
+import io.github.catalogo.admin.domain.pagination.SearchQuery;
 import io.github.catalogo.admin.domain.pagination.Pagination;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity;
 import io.github.catalogo.admin.infrastructure.category.persistence.CategoryRepository;
@@ -13,7 +13,6 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.PageRanges;
 import java.util.Optional;
 
 import static io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity.from;
@@ -42,7 +41,7 @@ public class CategoryMySQLGateway implements CategoryGateway {
         return this.categoryRepository.save(from(aCategory)).toAggregate();
     }
 
-    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+    public Pagination<Category> findAll(final SearchQuery aQuery) {
         final var page = PageRequest.of(
                 aQuery.page(),
                 aQuery.perPage(),
