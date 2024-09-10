@@ -13,6 +13,8 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
+import java.util.List;
 import java.util.Optional;
 
 import static io.github.catalogo.admin.infrastructure.category.persistence.CategoryJpaEntity.from;
@@ -80,5 +82,11 @@ public class CategoryMySQLGateway implements CategoryGateway {
         if (this.categoryRepository.existsById(anIdValue)) {
             this.categoryRepository.deleteById(anIdValue);
         }
+    }
+
+    @Override
+    public List<CategoryId> existsByIds(final Iterable<CategoryId> ids) {
+        // TODO: Implementar quando chegar na camada de infraestrutura de Genre.
+        return Collections.emptyList();
     }
 }
