@@ -5,6 +5,7 @@ import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.NotificationException;
 import io.github.catalogo.admin.domain.genre.Genre;
 import io.github.catalogo.admin.domain.genre.GenreGateway;
+import io.github.catalogo.admin.domain.validation.Error;
 import io.github.catalogo.admin.domain.validation.ValidationHandler;
 import io.github.catalogo.admin.domain.validation.handler.Notification;
 
@@ -40,6 +41,8 @@ public class DefaultCreateGenreUseCase extends CreateGenreUseCase {
         if (notification.hasError()) {
             throw new NotificationException("Could not create Aggregate Genre", notification);
         }
+
+        aGenre.addCategories(categories);
 
         return CreateGenreOutput.from(this.genreGateway.create(aGenre));
     }

@@ -7,6 +7,8 @@ import io.github.catalogo.admin.domain.validation.ValidationHandler;
 import java.util.List;
 
 public class ThrowsValidationHandler implements ValidationHandler {
+
+
     @Override
     public ValidationHandler append(Error anError) {
         throw DomainException.with(anError);
