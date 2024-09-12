@@ -22,7 +22,7 @@ import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
-public class UpdateGenreUseCase {
+public class UpdateGenreUseCaseTests {
 
     @InjectMocks
     private DefaultUpdateGenreUseCase useCase;
@@ -47,7 +47,7 @@ public class UpdateGenreUseCase {
                 expectedId.getValue(),
                 expectedName,
                 expectedIsActive,
-                expectedCategories
+                asString(expectedCategories)
         );
 
         when(genreGateway.findById(any()))
@@ -73,5 +73,11 @@ public class UpdateGenreUseCase {
                         && aGenre.getUpdatedAt().isBefore(aUpdatedGenre.getUpdatedAt())
                         && Objects.isNull(aUpdatedGenre.getDeletedAt())
         ));
+    }
+
+    private List<String> asString(final List<CategoryId> ids) {
+        return ids.stream()
+                .map(CategoryId::getValue)
+                .toList();
     }
 }
