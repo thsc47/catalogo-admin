@@ -17,8 +17,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class CreateGenreUseCaseTest {
+public class CreateGenreUseCaseTest extends UseCaseTest {
 
     @InjectMocks
     private DefaultCreateGenreUseCase useCase;
@@ -28,6 +27,11 @@ public class CreateGenreUseCaseTest {
 
     @Mock
     private GenreGateway genreGateway;
+
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway, genreGateway);
+    }
 
     @Test
     public void givenAValidCommand_whenCallsCreateGenre_shouldReturnGenreId() {

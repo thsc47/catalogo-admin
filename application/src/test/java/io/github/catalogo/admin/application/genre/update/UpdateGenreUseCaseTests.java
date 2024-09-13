@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.application.genre.update;
 
+import io.github.catalogo.admin.application.UseCaseTest;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.NotificationException;
@@ -20,8 +21,7 @@ import static org.mockito.AdditionalAnswers.returnsFirstArg;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class UpdateGenreUseCaseTests {
+public class UpdateGenreUseCaseTests extends UseCaseTest {
 
     @InjectMocks
     private DefaultUpdateGenreUseCase useCase;
@@ -31,6 +31,11 @@ public class UpdateGenreUseCaseTests {
 
     @Mock
     private GenreGateway genreGateway;
+
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(categoryGateway, genreGateway);
+    }
 
     @Test
     public void givenAValidCommand_whenCallsUpdateGenre_shouldReturnGenreId() {

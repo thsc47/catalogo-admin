@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.application.category.delete;
 
+import io.github.catalogo.admin.application.UseCaseTest;
 import io.github.catalogo.admin.application.category.update.UpdateCategoryCommand;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
@@ -11,13 +12,14 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
-@ExtendWith(MockitoExtension.class)
-public class DeleteCategoryUseCaseTests {
+public class DeleteCategoryUseCaseTests extends UseCaseTest {
 
     @InjectMocks
     private DefaultDeleteCategoryUseCase useCase;
@@ -25,9 +27,9 @@ public class DeleteCategoryUseCaseTests {
     @Mock
     private CategoryGateway gateway;
 
-    @BeforeEach
-    void cleanUp() {
-        reset(gateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(gateway);
     }
 
     @Test

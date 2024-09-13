@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.application.category.retrieve.get;
 
+import io.github.catalogo.admin.application.UseCaseTest;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import io.github.catalogo.admin.domain.category.CategoryId;
@@ -12,6 +13,8 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
+
 import static java.lang.String.format;
 import static java.util.Optional.empty;
 import static java.util.Optional.of;
@@ -20,8 +23,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class GetCategoryByIdUseCaseTests {
+public class GetCategoryByIdUseCaseTests extends UseCaseTest {
 
     @InjectMocks
     private DefaultGetCategoryByIddUseCase useCase;
@@ -29,9 +31,9 @@ public class GetCategoryByIdUseCaseTests {
     @Mock
     private CategoryGateway gateway;
 
-    @BeforeEach
-    void cleanUp() {
-        reset(gateway);
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(gateway);
     }
 
     @Test

@@ -1,5 +1,6 @@
 package io.github.catalogo.admin.application.category.create;
 
+import io.github.catalogo.admin.application.UseCaseTest;
 import io.github.catalogo.admin.domain.category.CategoryGateway;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -8,6 +9,7 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.util.List;
 import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -16,13 +18,18 @@ import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTests {
+public class CreateCategoryUseCaseTests extends UseCaseTest {
 
     @InjectMocks
     private DefaultCreateCategoryUseCase useCase;
 
     @Mock
     private CategoryGateway gateway;
+
+    @Override
+    protected List<Object> getMocks() {
+        return List.of(gateway);
+    }
 
     @Test
     void givenAValidCommand_whenCallsCreateCategory_shouldReturnCategoryId() {
