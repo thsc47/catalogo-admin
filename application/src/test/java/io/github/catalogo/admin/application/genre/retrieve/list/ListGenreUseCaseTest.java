@@ -70,7 +70,7 @@ public class ListGenreUseCaseTest extends UseCaseTest {
         // then
         Assertions.assertEquals(expectedPage, actualOutput.currentPage());
         Assertions.assertEquals(expectedPerPage, actualOutput.perPage());
-        Assertions.assertEquals(expectedTotal, actualOutput.totalItems());
+        Assertions.assertEquals(expectedTotal, actualOutput.total());
         Assertions.assertEquals(expectedItems, actualOutput.items());
 
         verify(genreGateway).findAll(eq(aQuery));
@@ -109,14 +109,14 @@ public class ListGenreUseCaseTest extends UseCaseTest {
         // then
         Assertions.assertEquals(expectedPage, actualOutput.currentPage());
         Assertions.assertEquals(expectedPerPage, actualOutput.perPage());
-        Assertions.assertEquals(expectedTotal, actualOutput.totalItems());
+        Assertions.assertEquals(expectedTotal, actualOutput.total());
         Assertions.assertEquals(expectedItems, actualOutput.items());
 
         verify(genreGateway).findAll(eq(aQuery));
     }
 
     @Test
-    public void givenAValidQuery_whenCallsListGenreAndResultIsEmpty_shouldReturnGenres() {
+    public void givenAValidQuery_whenCallsListGenreAndGatewayThrowsRandomError_shouldReturnException() {
         // given
         final var expectedPage = 0;
         final var expectedPerPage = 10;
@@ -133,9 +133,10 @@ public class ListGenreUseCaseTest extends UseCaseTest {
                 new SearchQuery(expectedPage, expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         // when
-        final var actualOutput = assertThrows(IllegalStateException.class, () -> {
-            useCase.execute(aQuery);
-        });
+        final var actualOutput = Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> useCase.execute(aQuery)
+        );
 
         // then
         assertEquals(expectedErrorMessage, actualOutput.getMessage());
