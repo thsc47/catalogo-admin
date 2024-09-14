@@ -3,6 +3,7 @@ package io.github.catalogo.admin.application.genre.retrieve.get;
 import io.github.catalogo.admin.application.UseCaseTest;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.exceptions.NotFoundException;
+import io.github.catalogo.admin.domain.genre.Genre;
 import io.github.catalogo.admin.domain.genre.GenreGateway;
 import io.github.catalogo.admin.domain.genre.GenreId;
 import org.junit.jupiter.api.Test;
@@ -14,6 +15,8 @@ import java.util.Optional;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -81,9 +84,9 @@ public class GetGenreByIdUseCaseTest extends UseCaseTest {
         assertEquals(expectedErrorMessage, actualException.getMessage());
     }
 
-    private List<String> asString(final List<CategoryID> ids) {
+    private List<String> asString(final List<CategoryId> ids) {
         return ids.stream()
-                .map(CategoryID::getValue)
+                .map(CategoryId::getValue)
                 .toList();
     }
 }
