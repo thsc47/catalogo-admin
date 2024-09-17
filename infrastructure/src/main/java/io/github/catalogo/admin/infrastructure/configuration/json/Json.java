@@ -10,12 +10,7 @@ import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.fasterxml.jackson.module.afterburner.AfterburnerModule;
 import org.springframework.http.converter.json.Jackson2ObjectMapperBuilder;
 
-import java.lang.invoke.CallSite;
 import java.util.concurrent.Callable;
-
-import static com.fasterxml.jackson.databind.DeserializationFeature.*;
-import static com.fasterxml.jackson.databind.PropertyNamingStrategies.SNAKE_CASE;
-import static com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS;
 
 public enum Json {
     INSTANCE;
