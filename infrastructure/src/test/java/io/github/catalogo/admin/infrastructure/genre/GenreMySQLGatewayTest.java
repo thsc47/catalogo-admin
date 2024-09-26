@@ -4,6 +4,7 @@ import io.github.catalogo.admin.MySQLGatewayTest;
 import io.github.catalogo.admin.domain.category.Category;
 import io.github.catalogo.admin.domain.category.CategoryId;
 import io.github.catalogo.admin.domain.genre.Genre;
+import io.github.catalogo.admin.domain.genre.GenreId;
 import io.github.catalogo.admin.infrastructure.category.CategoryMySQLGateway;
 import io.github.catalogo.admin.infrastructure.genre.persistence.GenreJpaEntity;
 import io.github.catalogo.admin.infrastructure.genre.persistence.GenreRepository;
@@ -245,6 +246,27 @@ public class GenreMySQLGatewayTest {
         assertEquals(aGenre.getCreatedAt(), persistedGenre.getCreatedAt());
         assertTrue(aGenre.getUpdatedAt().isBefore(persistedGenre.getUpdatedAt()));
         assertNotNull(persistedGenre.getDeletedAt());
+    }
+
+    @Test
+    public void givenAPrePersistedGenre_whenCallsDeleteById_shouldDeleteGenre() {
+        // given
+        final var aGenre = Genre.newGenre("Ação", true);
+        genreRepository.saveAndFlush(GenreJpaEntity.from(aGenre));
+        assertEquals(1, genreRepository.count());
+        // when
+        genreGateway.deleteById(aGenre.getId());
+        // then
+        assertEquals(0, genreRepository.count());
+    }
+    @Test
+    public void givenAnInvalidGenre_whenCallsDeleteById_shouldReturnOK() {
+        // given
+        assertEquals(0, genreRepository.count());
+        // when
+        genreGateway.deleteById(GenreId.from("123"));
+        // then
+        assertEquals(0, genreRepository.count());
     }
 
     private List<CategoryId> sorted(final List<CategoryId> expectedCategories) {
