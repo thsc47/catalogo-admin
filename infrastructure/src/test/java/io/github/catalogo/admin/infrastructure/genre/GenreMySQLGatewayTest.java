@@ -261,12 +261,45 @@ public class GenreMySQLGatewayTest {
     }
     @Test
     public void givenAnInvalidGenre_whenCallsDeleteById_shouldReturnOK() {
+        assertEquals(0, genreRepository.count());
+        genreGateway.deleteById(GenreId.from("123"));
+        assertEquals(0, genreRepository.count());
+    }
+
+    @Test
+    public void givenAPrePersistedGenre_whenCallsFindById_shouldReturnGenre() {
+        final var filmes =
+                categoryGateway.create(Category.newCategory("Filmes", null, true));
+        final var series =
+                categoryGateway.create(Category.newCategory("Séries", null, true));
+        final var expectedName = "Ação";
+        final var expectedIsActive = true;
+        final var expectedCategories = List.of(filmes.getId(), series.getId());
+        final var aGenre = Genre.newGenre(expectedName, expectedIsActive);
+        aGenre.addCategories(expectedCategories);
+        final var expectedId = aGenre.getId();
+        genreRepository.saveAndFlush(GenreJpaEntity.from(aGenre));
+        assertEquals(1, genreRepository.count());
+
+        final var actualGenre = genreGateway.findById(expectedId).get();
+
+        assertEquals(expectedId, actualGenre.getId());
+        assertEquals(expectedName, actualGenre.getName());
+        assertEquals(expectedIsActive, actualGenre.isActive());
+        assertEquals(expectedCategories, actualGenre.getCategories());
+        assertEquals(aGenre.getCreatedAt(), actualGenre.getCreatedAt());
+        assertEquals(aGenre.getUpdatedAt(), actualGenre.getUpdatedAt());
+        assertNull(actualGenre.getDeletedAt());
+    }
+    @Test
+    public void givenAInvalidGenreId_whenCallsFindById_shouldReturnEmpty() {
         // given
+        final var expectedId = GenreId.from("123");
         assertEquals(0, genreRepository.count());
         // when
-        genreGateway.deleteById(GenreId.from("123"));
+        final var actualGenre = genreGateway.findById(expectedId);
         // then
-        assertEquals(0, genreRepository.count());
+        assertTrue(actualGenre.isEmpty());
     }
 
     private List<CategoryId> sorted(final List<CategoryId> expectedCategories) {
